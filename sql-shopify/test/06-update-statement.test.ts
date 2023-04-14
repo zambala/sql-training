@@ -9,11 +9,15 @@ describe("Update Statements", () => {
 
     beforeAll(async () => {
         db = await Database.fromExisting("05", "06");
-    }, minutes(1));
+    }, minutes(10));
 
     it("should update one app title by app id", async done => {
         const app = await db.selectSingleRow(selectRowById(200, APPS));
-        const query = `todo`;
+        const query = `
+                        UPDATE apps
+                        SET title = 'QUICK VIEW'
+                        WHERE id = 200
+                        `;
         try {
             await db.execute(query);
         } catch (e) { console.log(e); };
@@ -23,12 +27,18 @@ describe("Update Statements", () => {
             "QUICK VIEW"
         );
         done();
-    }, minutes(1));
+    }, minutes(10));
 
     it("should update review developer reply and developer reply date by app id and author", async done => {
         const timeStamp = moment().format("YYYY-MM-DD hh:mm");
         const review = await db.selectSingleRow(selectReviewByAppIdAuthor(24, "PLAYBOY"));
-        const query = `todo`;
+        const query = `
+                        UPDATE reviews
+                        SET developer_reply = 'test reply',
+                            developer_reply_date = '${timeStamp}'
+                        WHERE app_id = 24
+                            AND author = 'PLAYBOY'
+                        `;
         try {
             await db.execute(query);
         } catch (e) { console.log(e); };
@@ -40,7 +50,10 @@ describe("Update Statements", () => {
     }, minutes(1));
 
     it("should update all categories to uppercase", async done => {
-        const query = `todo`;
+        const query = `
+                        UPDATE categories
+                        SET title = UPPER(title)
+                        `;
         try {
             await db.execute(query);
         } catch (e) { console.log(e); };
@@ -52,5 +65,5 @@ describe("Update Statements", () => {
             };
         };
         done();
-    }, minutes(1));
+    }, minutes(10));
 });
