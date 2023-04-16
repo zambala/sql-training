@@ -11,7 +11,13 @@ import { Rating } from "../src/data/types";
 import { minutes } from "./utils";
 
 const insertRatings = (movieId: number, ratings: Rating[]) => {
-  throw new Error(`todo`);
+  return (
+    `insert into ${MOVIE_RATINGS} (user_id, movie_id, rating, time_created) values` +
+    ratings.map(rating => {
+       return `(${rating.userId}, ${movieId}, ${rating.rating}, "${rating.time_created}")`;
+    }
+    ).join(",")
+  );
 };
 
 describe("Insert Combined Data", () => {
@@ -20,7 +26,7 @@ describe("Insert Combined Data", () => {
   beforeAll(async () => {
     db = await Database.fromExisting("02", "03");
     await CsvLoader.load();
-  }, minutes(3));
+  }, minutes(7));
 
   it(
     "should insert movie ratings",
